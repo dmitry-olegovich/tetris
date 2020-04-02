@@ -1,6 +1,6 @@
 """File that defines the entry point and has the main loop.
 """
-import pdb
+#import pdb
 
 import pygame
 from pygame.locals import (
@@ -29,7 +29,7 @@ timer = 0
 # playing field
 field = Field(conf.WIDTH, conf.HEIGHT)
 # test block
-fig = Figure(1, 5, 0)
+fig = aux.generate_new_figure(field.width)
 
 # main loop
 while running:
@@ -42,19 +42,19 @@ while running:
             if event.key == K_ESCAPE:
                 running = False
             if event.key == K_DOWN:
-                aux.down_or_stop(field, fig)
+                fig = aux.down_or_stop(field, fig)
             if event.key == K_LEFT:
                 aux.left_or_not(field, fig)
             if event.key == K_RIGHT:
                 aux.right_or_not(field, fig)
             if event.key == K_UP:
                 aux.rotate_or_not(field, fig)
-    
+
     # timer
     if timer == conf.TIME_MULT:
         #pdb.set_trace()
         timer = 0
-        aux.down_or_stop(field, fig)
+        fig = aux.down_or_stop(field, fig)
         #pdb.set_trace()
     
     # draw segment

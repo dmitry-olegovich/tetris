@@ -119,16 +119,3 @@ class Field():
 
         for index in line_list:
             self._array[index] = [0 for x in range(self.width)]
-
-if __name__ == "__main__":
-    field = Field()
-    fig = Figure(0, 5, 19)
-    field.grow(fig)
-    print(field, end='\n\n')
-    fig = Figure(0, 6, 6)
-    fig.rotate()
-    while field.check_down(fig):
-        fig.drop()
-    field.grow(fig)
-    print(field)
-    

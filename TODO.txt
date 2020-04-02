@@ -1,0 +1,12 @@
+Features:
+	- lines disappear
+	- score and lines counters
+	- speed progressing
+	- speed, score and line display
+	- next figure display
+	- high score list
+Bugs:
+	- figures can be put out of area bounds by rotating
+
+
+	
