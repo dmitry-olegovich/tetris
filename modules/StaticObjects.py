@@ -5,7 +5,7 @@ in tetris game, such as:
 - fallen static cells.
 """
 
-from TetrisObjects import Figure
+from .TetrisObjects import Figure, Cell
 
 class Field():
     """Describes the fallen static cells.
@@ -39,6 +39,13 @@ class Field():
     @property
     def height(self):
         return len(self._array)
+
+    def draw(self, screen, palette, width):
+        for y in range(self.height):
+            for x in range(self.width):
+                if self._array[y][x] != 0:
+                    cell = Cell(x, y, self._array[y][x])
+                    cell.draw(screen, palette, width)
 
     def grow(self, figure):
         """Add figure to field of fallen cells."""
@@ -79,6 +86,15 @@ class Field():
         
         return True
 
+    def check_rotation(self, figure):
+        """Check if figure after rotation is not intersecting self."""
+
+        for cell in figure.get_rotated_cells():
+            if self._array[cell.y][cell.x]:
+                return False
+        
+        return True
+
     def check_full_lines(self):
         """Return list of line numbers that are full."""
         
@@ -95,7 +111,14 @@ class Field():
         
         if 0 in self._array[line_num]:
             return False
+
         return True
+
+    def remove_lines(self, line_list: list):
+        """Fills lines as passed (by line num.) in line_list w/ 0."""
+
+        for index in line_list:
+            self._array[index] = [0 for x in range(self.width)]
 
 if __name__ == "__main__":
     field = Field()

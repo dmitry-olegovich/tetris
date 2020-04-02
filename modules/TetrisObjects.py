@@ -3,6 +3,7 @@ This module descirbes the basic classes for objects used in tetris game.
 
 """
 from collections import namedtuple
+import pygame
 
 Coordinate = namedtuple('Coord', ['x', 'y'])
 
@@ -33,6 +34,12 @@ class Cell():
         counter-clockwise around the 0,0 point.
         """
         self._pos = Coordinate(self.y, -self.x)
+
+    def draw(self, screen, palette, width):
+        x = self.x * width
+        y = self.y * width
+        pygame.draw.rect(screen, palette[self._color], 
+            (x,y, width, width), 0)
     
     # Not needed maybe?
     @property
@@ -77,7 +84,7 @@ class Figure():
         self._cells = [Cell(x, y, self._color) for x, y 
             in self._FIGURES[index]]
         self._pos = Coordinate(x, y)
-        if index = 6:
+        if index == 6:
             self._dont_rotate = True
         else:
             self._dont_rotate = False
@@ -91,6 +98,15 @@ class Figure():
         for cell in self._cells:
             cell.rotate()
 
+    def get_rotated_cells(self):
+        """Return a copy of cells as if they were rotated."""
+        copy = [Cell(cell.x, cell.y, cell._color) for cell 
+            in self._cells]
+        for cell in copy:
+            cell.rotate()
+        
+        return self.get_absolute_cells(self.x, self.y, copy)
+        
     def left(self):
         """Change postion of the figure left. No safety check!"""
 
@@ -106,16 +122,17 @@ class Figure():
 
         self._pos = Coordinate(self._pos.x, self._pos.y + 1)
 
+    def draw(self, screen, palette, cell_width):
+        """Draw cells one by one in absolute coordinates."""
+
+        for cell in self.cells:
+            cell.draw(screen, palette, cell_width)
+
     @property
     def cells(self):
         """Return cells list with absolute coordinates."""
 
-        result = []
-        for cell in self._cells:
-            result.append(Cell(cell.x + self.x,
-                cell.y + self.y, self.color))
-
-        return result
+        return self.get_absolute_cells(self.x, self.y, self._cells)
 
     @property
     def color(self):
@@ -129,60 +146,14 @@ class Figure():
     def y(self):
         return self._pos.y
 
-    # only used for debug purposed __repr__ 
-    @property
-    def x_range(self):
-        """Return the min and max X coord of the cells."""
-
-        min, max = 0, 0
-        for cell in self._cells:
-            if cell.x < min:
-                min = cell.x
-            if cell.x > max:
-                max = cell.x
-        
-        return min, max
-    
-    # only used for debug purposed __repr__ 
-    @property
-    def y_range(self):
-        """Return the min and max Y coord of the cells."""
-
-        min, max = 0, 0
-        for cell in self._cells:
-            if cell.y < min:
-                min = cell.y
-            if cell.y > max:
-                max = cell.y
-        
-        return min, max
-
-    # only needed for debug purposes
-    def __repr__(self):
-        x_min, x_max = self.x_range
-        y_min, y_max = self.y_range
-        line = ' ' * (abs(x_max - x_min) + 1)
-        text = [ list(line) for x in range((abs(y_max - y_min) + 1))]
-        
-        for cell in self._cells:
-            text[cell.y - y_min][cell.x - x_min] = 'X'
-        
-        result = ''
-        for line in text:
-            for char in line:
-                result += char
-            result += '\n'
+    @staticmethod
+    def get_absolute_cells(X:int, Y:int, cell_list:list):
+        """Return cell list with coordinates changed to absolute 
+        relative to X,Y point.
+        """
+        result = []
+        for cell in cell_list:
+            result.append(Cell(cell.x + X,
+                cell.y + Y, cell._color))
 
         return result
-
-if __name__ == "__main__":
-    """for i in range(7):
-        obj = Figure(i)
-        print(obj, end="\n")
-        obj.rotate()
-        print(obj, end="\n\n")
-    """
-    obj = Figure(1)
-    print(obj, end="\n")
-    obj.rotate()
-    print(obj, end="\n\n")
