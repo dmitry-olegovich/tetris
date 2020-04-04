@@ -5,7 +5,7 @@ in tetris game, such as:
 - fallen static cells.
 """
 
-from .TetrisObjects import Figure, Cell
+from .Figure import Figure, Cell
 
 class Field():
     """Describes the fallen static cells.

@@ -1,9 +1,37 @@
-import pdb
+#import pdb
 
 from random import randrange
+from pygame.locals import (
+    K_UP,
+    K_DOWN,
+    K_RIGHT,
+    K_LEFT,
+    K_ESCAPE,
+    KEYDOWN,
+    QUIT,
+)
 
-from .StaticObjects import Field
-from .TetrisObjects import Figure
+
+from .Field import Field
+from .Figure import Figure
+
+def process_input(key, field, figure):
+    """DOCSTRING HERE
+    """
+    if key == K_ESCAPE:
+        return (False, figure)
+    if key == K_DOWN:
+        fig = down_or_stop(field, figure)
+        return (True, fig)
+    if key == K_LEFT:
+        left_or_not(field, figure)
+    if key == K_RIGHT:
+        right_or_not(field, figure)
+    if key == K_UP:
+        rotate_or_not(field, figure)
+    
+    return (True, figure)
+
 
 def down_or_stop(field, fig):
     """Drop figure if no field cells in the way."""
