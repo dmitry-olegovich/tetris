@@ -1,5 +1,6 @@
 #import pdb
-
+import sys
+from collections import deque
 from random import randrange
 from pygame.locals import (
     K_UP,
@@ -11,60 +12,63 @@ from pygame.locals import (
     QUIT,
 )
 
-
 from .Field import Field
 from .Figure import Figure
+from .MoveLogic import idle, down_or_stop, left_or_not, right_or_not,\
+    rotate_or_not
 
-def process_input(key, field, figure):
+class Moveset():
     """DOCSTRING HERE
     """
-    if key == K_ESCAPE:
-        return (False, figure)
-    if key == K_DOWN:
-        fig = down_or_stop(field, figure)
-        return (True, fig)
-    if key == K_LEFT:
-        left_or_not(field, figure)
-    if key == K_RIGHT:
-        right_or_not(field, figure)
-    if key == K_UP:
-        rotate_or_not(field, figure)
     
-    return (True, figure)
+    IDLE = 0
+    DOWN = 1
+    LEFT = 2
+    RIGHT = 3
+    ROTATE = 4
 
+    moves = [
+        idle,
+        down_or_stop,
+        left_or_not,
+        right_or_not,
+        rotate_or_not,
+    ]
 
-def down_or_stop(field, fig):
-    """Drop figure if no field cells in the way."""
+def process_input(event, figure, field):
+    """DOCSTRING HERE
+    """
+    if event.type == QUIT:
+        return False, figure
+    if event.type == KEYDOWN:
+        if event.key == K_ESCAPE:
+            return False, figure
+        if event.key == K_DOWN:
+            figure = down_or_stop(field, figure)
+        elif event.key == K_LEFT:
+            figure = left_or_not(field, figure)
+        elif event.key == K_RIGHT:
+            figure = right_or_not(field, figure)
+        elif event.key == K_UP:
+            figure = rotate_or_not(field, figure)
+    
+    return True, figure
 
-    if field.check_down(fig):
-        fig.drop()
-        return fig
-    else:
-        field.grow(fig)
-        return generate_new_figure(field.width)
+def process_input_held(key_list):
+    """DOCSTRING HERE
+    """
+    moves = {}
+    moves[Moveset.DOWN] = key_list[K_DOWN]
+    moves[Moveset.RIGHT] = key_list[K_RIGHT]
+    moves[Moveset.LEFT] = key_list[K_LEFT]
+    
+    return moves
 
-def left_or_not(field, fig):
-    """Move figure left if no field cells in the way."""
+def move_figure(moveset: dict, figure: Figure, field: Field):
+    """DOCSTRING HERE
+    """
+    for key in moveset:
+        if moveset[key]:
+            figure = Moveset.moves[key](field, figure)
 
-    if field.check_left(fig):
-        fig.left()
-
-def right_or_not(field, fig):
-    """Move figure right if no field cells in the way."""
-
-    if field.check_right(fig):
-        fig.right()
-
-def rotate_or_not(field, fig):
-    """Rotate figure if it won't intersect with field after."""
-
-    if field.check_rotation(fig):
-        fig.rotate()
-
-def generate_new_figure(width):
-    code = randrange(0, len(Figure._FIGURES))
-    return Figure(code, x=int(width/2) - 1, y=0)
-
-
-
-
+    return figure

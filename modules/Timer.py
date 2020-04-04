@@ -7,7 +7,7 @@ class Timer():
         self._max = max
 
     def checks_out(self):
-        if self._val == self._max:
+        if self._val >= self._max:
             return False
         
         return True
