@@ -7,7 +7,7 @@ import pygame
 
 from modules.Figure import Figure
 from modules.Field import Field
-from modules.Timer import Timer
+from modules.Timer import Counter
 import modules.ControlLogic as control
 import modules.MoveLogic as moveing
 import tetris_conf as conf
@@ -19,10 +19,11 @@ screen = pygame.display.set_mode((conf.SCREEN_WIDTH,
 running = True
 
 # timer used to count cycles until figure drops down on its own
-timer = Timer(conf.TIME_MULT)
+timer = Counter(conf.TIME_MULT)
 # timer used to count cycles until figure does user input on key held
-timer_input_lag = Timer(200)
-timer_input_slow = Timer(70)
+timer_input_lag = Counter(200)
+timer_input_slow = Counter(70)
+timer_lines_flash = Counter(50)
 # dictionary used to store commands from held down buttons
 moves = {
     control.Moveset.IDLE: 0,
@@ -50,6 +51,7 @@ while running:
     timer.increment()
     timer_input_slow.increment()
     timer_input_lag.increment()
+    timer_lines_flash.increment()
 
     if not timer.checks_out():
         timer.reset()
@@ -59,6 +61,9 @@ while running:
         timer_input_slow.reset()
         fig = control.move_figure(moves, fig, field)
     
+    lines_cleared = field.check_full_lines()
+    field.flash_lines(lines_cleared, timer_lines_flash)
+
     # drawing phase
     screen.fill(conf.BG_COLOR)
     fig.draw(screen, conf.COLORS, conf.CELL_WIDTH)

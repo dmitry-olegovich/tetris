@@ -4,7 +4,7 @@ in tetris game, such as:
 - screen boundary,
 - fallen static cells.
 """
-
+from .Timer import Counter
 from .Figure import Figure, Cell
 
 class Field():
@@ -113,9 +113,44 @@ class Field():
             return False
 
         return True
+    
+    def flash_lines(self, numbers, counter: Counter):
+        """CURRENTLY DOESN'T WORK AS INTENDED"""
+        if len(numbers) == 0:
+            counter.reset()
+            return
+        if not counter.checks_out():
+            counter.reset()
+            self.remove_lines(numbers)
+            return
+        if counter == 0:
+            self.highlight_lines(numbers)
+
+    def highlight_lines(self, numbers):
+        """CURRENTLY DOESN'T WORK ANYWAY"""
+        highlighted = [-1 for x in len(self._array[0])]
+        for linenum in numbers:
+            self._array[linenum] = highlighted
 
     def remove_lines(self, line_list: list):
         """Fills lines as passed (by line num.) in line_list w/ 0."""
 
         for index in line_list:
             self._array[index] = [0 for x in range(self.width)]
+
+        self.shift_lines(line_list)
+
+    def shift_lines(self, line_list):
+        copy = [list([0] * self.width) for i 
+            in range(len(line_list))]
+        
+        line_list = sorted(line_list)
+        for line_num in line_list:
+            for i in range(line_num):
+                copy.append(self._array[i][:])
+        
+        self._array = copy
+        
+
+
+
