@@ -36,8 +36,8 @@ class Moveset():
     ]
 
 def process_input(event, figure, field):
-    """DOCSTRING HERE
-    """
+    """Return new figure after a move based on a keypress event."""
+
     if event.type == QUIT:
         return False, figure
     if event.type == KEYDOWN:
@@ -55,8 +55,8 @@ def process_input(event, figure, field):
     return True, figure
 
 def process_input_held(key_list):
-    """DOCSTRING HERE
-    """
+    """Return a dict of moves w/ 0/1 values based on held keys."""
+
     moves = {}
     moves[Moveset.DOWN] = key_list[K_DOWN]
     moves[Moveset.RIGHT] = key_list[K_RIGHT]
@@ -65,8 +65,9 @@ def process_input_held(key_list):
     return moves
 
 def move_figure(moveset: dict, figure: Figure, field: Field):
-    """DOCSTRING HERE
+    """Return new figure after a move based on a moves in moveset dict.
     """
+    
     for key in moveset:
         if moveset[key]:
             figure = Moveset.moves[key](field, figure)

@@ -41,6 +41,9 @@ def rotate_or_not(field, fig):
     return fig
 
 def generate_new_figure(width):
+    """Return new random figure postitioned at the top of the 
+    game-screen."""
+
     code = randrange(0, len(Figure._FIGURES))
     return Figure(code, x=int(width/2) - 1, y=0)
 

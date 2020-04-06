@@ -88,6 +88,12 @@ class Figure():
             self._dont_rotate = True
         else:
             self._dont_rotate = False
+
+    def __repr__(self):
+        result = ''
+        for cell in self._cells:
+            result += str(cell)
+        return result
     
     def rotate(self):
         """Rotate figure 90 deg counter-clockwise. No safety check!"""
@@ -157,3 +163,4 @@ class Figure():
                 cell.y + Y, cell._color))
 
         return result
+

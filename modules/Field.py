@@ -4,6 +4,8 @@ in tetris game, such as:
 - screen boundary,
 - fallen static cells.
 """
+import pdb
+
 from .Timer import Counter
 from .Figure import Figure, Cell
 
@@ -19,6 +21,7 @@ class Field():
     """
 
     def __init__(self, max_x: int = 10, max_y: int = 20):
+        print(f"***DEBUG*** New Field object: {max_x}x{max_y}")  # debug
         self._array = [list([0] * max_x) for Y in range(max_y)]
 
     def __repr__(self):
@@ -34,6 +37,7 @@ class Field():
 
     @property
     def width(self):
+        #pdb.set_trace()
         return len(self._array[0])
 
     @property
@@ -49,17 +53,27 @@ class Field():
 
     def grow(self, figure):
         """Add figure to field of fallen cells."""
-
+        print(f"***DEBUG*** {self.grow.__name__}: field size: {self.width}x{self.height}")  # debug
         for cell in figure.cells:
+            print(f"***DEBUG*** {self.grow.__name__}: cell: {cell}")  # debug
+            if cell.y < 0:    # endgame condition
+                print("***DEBUG*** GAME OVER!")  # DEBUG
+                return False
             self._array[cell.y][cell.x] = figure.color
+
+        return True
 
     def check_down(self, figure):
         """Check if figure can go down."""
-        
+        print(f"***DEBUG*** {self.check_down.__name__}: params: {repr(figure)}")  # debug
         for cell in figure.cells:
-            if cell.y + 1 >= self.height:
+            print(f"***DEBUG*** {self.check_down.__name__}: cell: {cell}")  # debug
+            if cell.y + 1 < 0:
+                continue  # this cell is not going out yet
+            elif cell.y + 1 >= self.height:
                 return False
-            if self._array[cell.y + 1][cell.x]:
+            elif self._array[cell.y + 1][cell.x]:
+                print(f"***DEBUG*** {self.check_down.__name__}: bottom value: {self._array[cell.y + 1][cell.x]}")  # debug
                 return False
         
         return True
@@ -68,9 +82,13 @@ class Field():
         """Check if figure can go left."""
 
         for cell in figure.cells:
-            if cell.x - 1 < 0:
+            x = cell.x
+            y = cell.y
+            if y < 0:
+                y = 0  # top border doesn't matter
+            if x - 1 < 0:
                 return False
-            if self._array[cell.y][cell.x - 1]:
+            if self._array[y][x - 1]:
                 return False
         
         return True
@@ -79,9 +97,13 @@ class Field():
         """Check if figure can go right."""
 
         for cell in figure.cells:
-            if cell.x + 1 >= self.width:
+            x = cell.x
+            y = cell.y
+            if y < 0:
+                y = 0  # top border doesn't matter
+            if x + 1 >= self.width:
                 return False
-            if self._array[cell.y][cell.x + 1]:
+            if self._array[y][x + 1]:
                 return False
         
         return True
@@ -90,7 +112,13 @@ class Field():
         """Check if figure after rotation is not intersecting self."""
 
         for cell in figure.get_rotated_cells():
-            if self._array[cell.y][cell.x]:
+            x = cell.x
+            y = cell.y
+            if y < 0:
+                y = 0  # top border doesn't matter
+            if x < 0 or x >= self.width:
+                return False
+            if self._array[y][x]:
                 return False
         
         return True
@@ -114,18 +142,13 @@ class Field():
 
         return True
     
-    def flash_lines(self, numbers, counter: Counter):
+    def flash_lines(self, numbers):
         """CURRENTLY DOESN'T WORK AS INTENDED"""
         if len(numbers) == 0:
-            counter.reset()
             return
-        if not counter.checks_out():
-            counter.reset()
-            self.remove_lines(numbers)
-            return
-        if counter == 0:
-            self.highlight_lines(numbers)
-
+        self.remove_lines(numbers)
+        return
+        
     def highlight_lines(self, numbers):
         """CURRENTLY DOESN'T WORK ANYWAY"""
         highlighted = [-1 for x in len(self._array[0])]

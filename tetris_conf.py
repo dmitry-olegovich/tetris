@@ -19,3 +19,21 @@ SCREEN_WIDTH = WIDTH*CELL_WIDTH  # TESTING FOR NOW, WILL INCLUDE MARGIN
 SCREEN_HEIGHT = HEIGHT*CELL_WIDTH  # TESTING FOR NOW, WILL INCLUDE MARGIN
 
 TIME_MULT = 1000  # numberof cycles on speed=1 for one forced down move
+
+TEST = {
+    'cell_width': 20,
+    'width': 10,
+    'height': 20,
+    'turn_cycles': 1000,
+    'palette': [
+        (80, 80 , 80),           # index = 0 - dark grey
+        (200, 0, 0),        # index = 1 - red
+        (0, 200, 0),        # index = 2 - green
+        (160, 82, 45),      # index = 3 - brown
+        (200, 130, 0),      # index = 4 - orange
+        (0, 0, 200),        # index = 5 - blue
+        (0, 200, 200),      # index = 6 - yellow
+        (200, 200, 200),    # index = 7 - white
+    ],
+    'speed': 1,
+}

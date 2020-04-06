@@ -1,5 +1,14 @@
 class Counter():
-    """DOCSTRING HERE
+    """A simple counter class used as timer.
+    
+    Args:
+        max (int): maximum value at which counter will need to be reset.
+        value (int): initial value if it needs to be > 0
+    
+    Attributes:
+        _val = current counter value
+        _max = at this value Counter.checks_out() will start returning
+            False value
     """
     
     def __init__(self, max: int = 1000, value: int = 0):
@@ -8,6 +17,8 @@ class Counter():
 
     
     def __lt__(self, other):
+        """< defined for int and Counter."""
+
         if type(other) == int:
             return self._val < other
         if type(other) == Counter:
@@ -16,6 +27,8 @@ class Counter():
             raise TypeError
     
     def __eq__(self, other):
+        """== defined for int and Counter."""
+
         if type(other) == int:
             return self._val == other
         if type(other) == Counter:
@@ -24,6 +37,8 @@ class Counter():
             raise TypeError
 
     def __gt__(self, other):
+        """> defined for int and Counter."""
+
         if type(other) == int:
             return self._val > other
         if type(other) == Counter:
@@ -32,6 +47,8 @@ class Counter():
             raise TypeError
 
     def checks_out(self):
+        """Return True if counter value < max."""
+        
         if self._val >= self._max:
             return False
         

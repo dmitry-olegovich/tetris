@@ -5,6 +5,8 @@ from collections import deque
 
 import pygame
 
+
+from modules.Game import Tetris #, InfoPanel  # planned
 from modules.Figure import Figure
 from modules.Field import Field
 from modules.Timer import Counter
@@ -14,9 +16,17 @@ import tetris_conf as conf
 
 
 pygame.init()
-screen = pygame.display.set_mode((conf.SCREEN_WIDTH,
+
+display = pygame.display.set_mode((conf.SCREEN_WIDTH,
     conf.SCREEN_HEIGHT))
 running = True
+
+game = Tetris(conf.TEST)
+#info = Info()
+"""
+########################################################################
+#                       Currently being tested to replace this code
+########################################################################
 
 # timer used to count cycles until figure drops down on its own
 timer = Counter(conf.TIME_MULT)
@@ -36,13 +46,45 @@ moves = {
 field = Field(conf.WIDTH, conf.HEIGHT)
 # generate first figure
 fig = moveing.generate_new_figure(field.width)
+"""
 
 ### main loop ###
 while running:
+
+    game.process_input(pygame.event.get())
+    #game.process_input_held(pygame.key.get_pressed())  # not tested at this itteration
+    
+    # tick
+    if not game.paused:
+        game.tick()  # increase timers, drop figure, process inputs,
+                     # check full lines, flush full lines, increase Score,
+                     # Lines, Speed
+    else:
+        game.tick_paused()  # this is planned to be used to flash full lines while game logic is on pause
+
+    # update info for info pannel
+    #info.update(game.info_update())  # return (next figure, score, lines, speed)
+    
+    game_panel = game.draw()  # a pygame Surface object returned
+    #info_panel = info.draw()  # a pygame Surface object returned
+
+    display.fill(conf.BG_COLOR)
+    display.blit(game_panel, (0,0))
+    #display.blit(info_panel, (info_panel coords))
+
+    pygame.display.update()
+    running = game.is_active
+
+    """
+    ####################################################################
+    #                       Currently being tested to replace this code
+    ####################################################################
+
     for event in pygame.event.get():
         # imidiate reaction to keypresses processed here
         running, fig = control.process_input(event, fig, field)
         timer_input_lag.reset()
+        
 
     # this dict is being used to process pressed and held keys
     moves = control.process_input_held(pygame.key.get_pressed())
@@ -70,3 +112,4 @@ while running:
     field.draw(screen, conf.COLORS, conf.CELL_WIDTH)
     
     pygame.display.flip()
+    """

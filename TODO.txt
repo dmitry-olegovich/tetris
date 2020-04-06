@@ -1,13 +1,16 @@
 Features:
 	+ move on key hold, increment move on key tap
 	+ lines disappear
+	+ refactor code to have a Game class OOP interface
 	- score and lines counters
 	- speed progressing
 	- speed, score and line display
 	- next figure display
 	- high score list
 Bugs:
-	- figures can be put out of area bounds by rotating
+	+ figures can be put out of area bounds by rotating
+	- lines not removed correctly (maybe line needs to be above bottom for this)
+	- lines are not shifted correctly (maybe line needs to be above bottom for this)
 	- figures need to rotate clockwise instead
 	- some figures have a wierd center or laterally move when only rotated
 	- at rotation of figure on the right side playing field: 
