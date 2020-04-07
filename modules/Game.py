@@ -176,11 +176,15 @@ class Tetris():
         """Return a dict with updated game info."""
 
         info = {
-            'next': self._next,
             'score': self._score,
             'lines': self._lines,
             'level': self._speed,
         }
+
+        if self._next is None:
+            info['next'] = None
+        else:
+            info['next'] = self._next.copy()
 
         return info
 

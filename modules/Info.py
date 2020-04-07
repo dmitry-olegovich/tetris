@@ -33,7 +33,7 @@ class InfoPanel():
         self._lines = 0
         self._speed = config['speed']
         self._cell_width = config['cell_width']
-        self._screen_res = (config['cell_width']*5,
+        self._screen_res = (config['cell_width']*6,
             config['cell_width']*10)
         self._palette = config['palette'][:]
         
@@ -48,11 +48,11 @@ class InfoPanel():
         pygame.font.init()
         myfont = pygame.font.SysFont('Comic Sans MS', 15)
         score = myfont.render(f'Score: {self._score}', False, (250, 250, 250))  # debug values
-        score_coords = (0, 80)  # debug values
+        score_coords = (0, 100)  # debug values
         level = myfont.render(f'Level: {self._speed}', False, (250, 250, 250))  # debug values
-        level_coords = (0, 100)  # debug values
+        level_coords = (0, 120)  # debug values
         lines = myfont.render(f'Lines: {self._lines}', False, (250, 250, 250))  # debug values
-        lines_coords = (0, 120)  # debug values
+        lines_coords = (0, 140)  # debug values
 
         surface.blit(score, score_coords)
         surface.blit(level, level_coords)
@@ -69,4 +69,12 @@ class InfoPanel():
         self._speed = info['level']
         self._score = info['score']
         self._lines = info['lines']
+
+        if self._next is not None:
+            self._next.drop()
+            self._next.drop()
+            self._next.right()
+            self._next.right()
+            
+
         

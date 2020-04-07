@@ -84,6 +84,7 @@ class Figure():
         self._cells = [Cell(x, y, self._color) for x, y 
             in self._FIGURES[index]]
         self._pos = Coordinate(x, y)
+        self._code = index
         if index == 6:
             self._dont_rotate = True
         else:
@@ -133,6 +134,9 @@ class Figure():
 
         for cell in self.cells:
             cell.draw(screen, palette, cell_width)
+
+    def copy(self):
+        return Figure(self._code, 0, 0)
 
     @property
     def cells(self):

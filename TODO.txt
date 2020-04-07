@@ -6,12 +6,14 @@ Features:
 	+ speed progressing
 	+ speed, score and line display
 	+ next figure display
+	- refactor constants to be tuned via config or code where needed
 	- refactor unused shit
 	- high score list
 Bugs:
 	+ figures can be put out of area bounds by rotating
 	+ lines not removed correctly (maybe line needs to be above bottom for this)
 	+ lines are not shifted correctly (maybe line needs to be above bottom for this)
+	+ next figures not shown correctly
 	- figures need to rotate clockwise instead
 	- some figures have a wierd center or laterally move when only rotated
 	- at rotation of figure on the right side playing field: 
