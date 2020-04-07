@@ -24,7 +24,7 @@ TEST = {
     'cell_width': 20,
     'width': 10,
     'height': 20,
-    'turn_cycles': 1000,
+    'turn_cycles': 400,
     'palette': [
         (80, 80 , 80),           # index = 0 - dark grey
         (200, 0, 0),        # index = 1 - red

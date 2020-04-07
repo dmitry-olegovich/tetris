@@ -1,6 +1,7 @@
 """ This module provides a Tetris class - all that is going on in the 
 Tetris game screen, i.e. the the game field with falling figures.
 """
+import pdb
 
 import pygame
 from random import randrange
@@ -72,11 +73,9 @@ class Tetris():
         self._speed = config['speed']
         self._config = dict(config)
         self._moves = {
-            Moveset.IDLE: 0,
-            Moveset.DOWN: 0,
-            Moveset.LEFT: 0,
-            Moveset.RIGHT: 0,
-            Moveset.ROTATE: 0,
+            K_DOWN: None,
+            K_RIGHT: None,
+            K_LEFT: None,
         }
         self._screen_res = (config['cell_width']*self._field.width,
             config['cell_width']*self._field.height)
@@ -86,6 +85,7 @@ class Tetris():
         # swap random figures instead of default ones
         self._next = self._generate_new_figure()
         self._next = self._generate_new_figure()
+        self._moves_keys = self._moves.keys()
 
     @property
     def width(self):
@@ -130,24 +130,41 @@ class Tetris():
         """Process held keys passed in pressed_list - list of 0/1 w/
         indexes values corresponding to pygame.locals definitions."""
 
-        self._moves[Moveset.DOWN] = key_list[K_DOWN]
-        self._moves[Moveset.RIGHT] = key_list[K_RIGHT]
-        self._moves[Moveset.LEFT] = key_list[K_LEFT]
+        for key in self._moves_keys:
+            if pressed_list[key] == 0:
+                self._moves[key] = None
+            if pressed_list[key] == 1 and self._moves[key] is None:
+                self._moves[key] = Counter(200) #  debug value
     
     def tick(self):
         """Make a game logic tick."""
+
+        # make moves if needed for held down keys
+        for key in self._moves_keys:
+            if self._moves[key] is None:
+                continue
+            self._moves[key].increment()
+            if not self._moves[key].checks_out():
+                #pdb.set_trace()  # DEBUG
+                # drop timer from input lag to move slowdown value
+                self._moves[key] = Counter(50)  # debug value
+                # now make a move
+                getattr(self, Moveset.moves[key]) ()
+        
         self._timer.increment()
         if not self._timer.checks_out():
             self._timer.reset()
             self._down_or_stop()
         
+        
         lines_full = self._field.check_full_lines()
+        self._update_info(lines_full)
         self._field.flash_lines(lines_full)
 
     ####################################################################
     #                           TODO 
-    # Ticks both for game logic tick and graphic tick w/ game logic on 
-    # pause.
+    # Ticks for graphic tick w/ game logic on pause
+    # 
     ####################################################################
     
     def tick_paused(self):
@@ -162,7 +179,7 @@ class Tetris():
             'next': self._next,
             'score': self._score,
             'lines': self._lines,
-            'level': self.speed,
+            'level': self._speed,
         }
 
         return info
@@ -183,7 +200,7 @@ class Tetris():
 
     def _down_or_stop(self):
         """Drop figure if no field cells in the way."""
-        print(f"***DEBUG*** {self._down_or_stop.__name__}: params: {self._figure}")  # debug
+        #print(f"***DEBUG*** {self._down_or_stop.__name__}: params: {self._figure}")  # debug
         if self._field.check_down(self._figure):
             self._figure.drop()
         else:
@@ -229,22 +246,26 @@ class Tetris():
             if self._moves[key]:
                 getattr(self, Moveset.moves[key]) ()
 
+    def _update_info(self, lines:list):
+        score = 1
+        for line in lines:
+            self._score += score
+            score *= 2
+
+        l_num = len(lines)
+        self._lines += l_num
+        if self._lines + 1 % 15 == 0:  # debug value
+            self._speed += 1
+            cycles = self._timer._max
+            self._timer = Counter(cycles - cycles*0.1)
+        #print(f"SCORE: {self._score}\nLINES: {self._lines}\nSPEED: {self._speed}")  # debug
+
 class Moveset():
     """This class just defines a number of constants for processing moves
     """
     
-    IDLE = 0
-    DOWN = 1
-    LEFT = 2
-    RIGHT = 3
-    ROTATE = 4
-
-    moves = [
-        '_idle',
-        '_down_or_stop',
-        '_left_or_not',
-        '_right_or_not',
-        '_rotate_or_not',
-    ]
-
-
+    moves = {
+            K_DOWN: '_down_or_stop',
+            K_RIGHT: '_right_or_not',
+            K_LEFT: '_left_or_not',
+    }

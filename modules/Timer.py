@@ -14,6 +14,7 @@ class Counter():
     def __init__(self, max: int = 1000, value: int = 0):
         self._val = value
         self._max = max
+        self._checkpoint = 0
 
     
     def __lt__(self, other):
@@ -59,3 +60,11 @@ class Counter():
 
     def reset(self):
         self._val = 0
+
+    def sub_timer(self, value):
+        if not self._checkpoint:
+            self._checkpoint = self._val - 1
+        result = self._val - self._checkpoint % value
+        if not result:
+            self._checkpoint = 0
+        return bool(result)
