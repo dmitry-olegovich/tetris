@@ -6,6 +6,7 @@ Features:
 	+ speed progressing
 	+ speed, score and line display
 	+ next figure display
+	+ read if it's possible to fix FPS and tie timers to them
 	- refactor constants to be tuned via config or code where needed
 	- refactor unused shit
 	- high score list

@@ -24,7 +24,7 @@ TEST = {
     'cell_width': 20,
     'width': 10,
     'height': 20,
-    'turn_cycles': 400,
+    'turn_cycles': 40,
     'palette': [
         (80, 80 , 80),           # index = 0 - dark grey
         (200, 0, 0),        # index = 1 - red
@@ -36,4 +36,5 @@ TEST = {
         (200, 200, 200),    # index = 7 - white
     ],
     'speed': 1,
+    'FPS_limit': 40,
 }

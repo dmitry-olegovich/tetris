@@ -48,19 +48,7 @@ class Tetris():
         _screen_res (tuple of int): drawing area size in px;
         _palette (list): list of used colors - (r,g,b) tuples.
 
-    Class Atributes:
-        _flash_cycles_num (int): number of flashing cycles for full
-            lines input;
-        _input_lag_cycles_num (int): number of cycles before key is
-            considered held after being pressed, needed for a fine
-            single tap move to be possible;
-        _input_slow_cycles_num (int): number of cycles skiped before 
-            figure is moved on key held, needed to control the speed of
-            figure moving while key is held.
     """
-    _flash_cycles_num = 50  # or make it a Counter ?
-    _input_lag_cycles_num = 200  # or make it a Counter ?
-    _input_slow_cycles_num = 70  # or make it a Counter ?
     
     def __init__(self, config: dict):
         #_canvas (pygame.Surface): the canvas on which to draw figures
@@ -134,7 +122,7 @@ class Tetris():
             if pressed_list[key] == 0:
                 self._moves[key] = None
             if pressed_list[key] == 1 and self._moves[key] is None:
-                self._moves[key] = Counter(200) #  debug value
+                self._moves[key] = Counter(5) #  debug value
     
     def tick(self):
         """Make a game logic tick."""
@@ -147,7 +135,7 @@ class Tetris():
             if not self._moves[key].checks_out():
                 #pdb.set_trace()  # DEBUG
                 # drop timer from input lag to move slowdown value
-                self._moves[key] = Counter(50)  # debug value
+                self._moves[key] = Counter(2)  # debug value
                 # now make a move
                 getattr(self, Moveset.moves[key]) ()
         

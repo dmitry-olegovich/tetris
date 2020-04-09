@@ -26,12 +26,12 @@ display = pygame.display.set_mode((conf.SCREEN_WIDTH*2,
 
 running = True
 
+clock = pygame.time.Clock()
 game = Tetris(conf.TEST)
 info = InfoPanel(conf.TEST)
 
 ### main loop ###
 while running:
-
     game.process_input(pygame.event.get())
     game.process_input_held(pygame.key.get_pressed())  # held keys are processed with delay
     
@@ -55,3 +55,4 @@ while running:
 
     pygame.display.update()
     running = game.is_active
+    clock.tick(conf.TEST['FPS_limit'])
