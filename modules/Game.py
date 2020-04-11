@@ -77,6 +77,7 @@ class Tetris():
         self._next = self._generate_new_figure()
         self._moves_keys = self._moves.keys()
         self._timer = Counter(self._calc_turn_ticks())
+        self._lines_since_lvl_up = 0
 
     @property
     def width(self):
@@ -162,7 +163,7 @@ class Tetris():
         pass
 
     def info_update(self):
-        """Return a dict with updated game info."""
+        """Return a dict with updated game info for Info class method."""
 
         info = {
             'score': self._score,
@@ -221,8 +222,8 @@ class Tetris():
 
     def _generate_new_figure(self):
         """Push current next figure to being current figure and generate
-        new random figure postitioned at the top of the game-screen."""
-
+        new random figure postitioned at the top of the game-screen.
+        """
         width = self.width
         code = randrange(0, len(Figure._FIGURES))
         if self._next:
@@ -241,25 +242,38 @@ class Tetris():
                 getattr(self, Moveset.moves[key]) ()
 
     def _update_info(self, lines:list):
+        """Update score, level, lines records.
+        Called every tick.
+        """
         score = 1
         for line in lines:
             self._score += score
             score *= 2
 
-        l_num = len(lines)
-        self._lines += l_num
-        speed_chng =  self._lines // self._lines_num_speed_up + 1
-        if speed_chng > self._speed:
-            self._speed = speed_chng
+        self._lines += len(lines)
+        self._lines_since_lvl_up += len(lines)
+        if self._check_speed_increase():
+            self._lines_since_lvl_up = 0
+            self._speed += 1
             cycles = self._config['turn_cycles']
             self._timer = Counter(self._calc_turn_ticks())
 
+    def _check_speed_increase(self):
+        """Return True every 4 self._lines."""
+
+        if self._lines_since_lvl_up // self._lines_num_speed_up >= 1:
+            return True
+      
+        return False
+
     def _calc_turn_ticks(self):
+        """Return calculated ticks per turn."""
+
         return self._config['turn_cycles'] * self._exp(self._speed)
     
     @staticmethod
     def _exp(number):
-        """Return calculation for exponential decresase.
+        """Formula used to calculate ticks per turn depending on speed.
         
         At number = 1 roughly = 1, at 10 roughly = 0.18
         """

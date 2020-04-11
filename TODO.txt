@@ -7,10 +7,10 @@ Features:
 	+ speed, score and line display
 	+ next figure display
 	+ read if it's possible to fix FPS and tie timers to them
-	- universal speed formula +
-	- refactor constants to be tuned via config or code where needed
-	- refactor out unused shit and duplicated shit +
-	- squares prettier +
+	+ universal speed formula
+	+ refactor constants to be tuned via config or code where needed
+	+ refactor out unused shit and duplicated shit
+	+ squares prettier
 	- menu
 	- high score list
 	
@@ -26,6 +26,7 @@ Bugs:
 		if self._array[cell.y][cell.x]:
 		IndexError: list index out of range
 	- endgame condition check is wierd - doesn't end at the moment it should
+	+ increase of speed is only done if lines are up to it from speed 1
 
 
 	
