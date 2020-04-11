@@ -11,8 +11,6 @@ from modules.Info import InfoPanel
 from modules.Figure import Figure
 from modules.Field import Field
 from modules.Timer import Counter
-import modules.ControlLogic as control
-import modules.MoveLogic as moveing
 import tetris_conf as conf
 
 
@@ -55,4 +53,6 @@ while running:
 
     pygame.display.update()
     running = game.is_active
+    if not running:
+        print(f"***DEBUG*** GAME OVER! Score: {game.score}")  # DEBUG
     clock.tick(conf.TEST['FPS_limit'])

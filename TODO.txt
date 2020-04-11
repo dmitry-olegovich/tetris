@@ -17,7 +17,7 @@ Bugs:
 	+ lines not removed correctly (maybe line needs to be above bottom for this)
 	+ lines are not shifted correctly (maybe line needs to be above bottom for this)
 	+ next figures not shown correctly
-	- figures need to rotate clockwise instead
+	+ figures need to rotate clockwise instead
 	- some figures have a wierd center or laterally move when only rotated
 	- at rotation of figure on the right side playing field: 
 		in check_rotation 

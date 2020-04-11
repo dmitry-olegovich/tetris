@@ -90,6 +90,10 @@ class Tetris():
     @property
     def is_active(self):
         return self._active
+    
+    @property
+    def score(self):
+        return self._score
 
     def process_input(self, events: list):
         """Process input events out of passed pygame events."""

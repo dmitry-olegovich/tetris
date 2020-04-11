@@ -21,7 +21,6 @@ class Field():
     """
 
     def __init__(self, max_x: int = 10, max_y: int = 20):
-       # print(f"***DEBUG*** New Field object: {max_x}x{max_y}")  # debug
         self._array = [list([0] * max_x) for Y in range(max_y)]
 
     def __repr__(self):
@@ -56,11 +55,9 @@ class Field():
 
     def grow(self, figure):
         """Add figure to field of fallen cells."""
-       # print(f"***DEBUG*** {self.grow.__name__}: field size: {self.width}x{self.height}")  # debug
+        
         for cell in figure.cells:
-          #  print(f"***DEBUG*** {self.grow.__name__}: cell: {cell}")  # debug
             if cell.y < 0:    # endgame condition
-                print("***DEBUG*** GAME OVER!")  # DEBUG
                 return False
             self._array[cell.y][cell.x] = figure.color
 
@@ -68,15 +65,13 @@ class Field():
 
     def check_down(self, figure):
         """Check if figure can go down."""
-        #print(f"***DEBUG*** {self.check_down.__name__}: params: {repr(figure)}")  # debug
+        
         for cell in figure.cells:
-           # print(f"***DEBUG*** {self.check_down.__name__}: cell: {cell}")  # debug
             if cell.y + 1 < 0:
                 continue  # this cell is not going out yet
             elif cell.y + 1 >= self.height:
                 return False
             elif self._array[cell.y + 1][cell.x]:
-               # print(f"***DEBUG*** {self.check_down.__name__}: bottom value: {self._array[cell.y + 1][cell.x]}")  # debug
                 return False
         
         return True
@@ -169,8 +164,7 @@ class Field():
     def shift_lines(self, line_list):
         copy = [list([0] * self.width) for i 
             in range(len(line_list))]
-        print(f"***DEBUG*** shifting over lines: {line_list}")  # debug
-        #pdb.set_trace()  # DEBUG
+        
         line_list = sorted(line_list)
         if line_list[-1] != self.height:
             line_list.append(self.height)
@@ -180,8 +174,7 @@ class Field():
             if line_num - segment_start >= 0:
                 copy += self._array[segment_start:line_num]
             segment_start = line_num + 1 
-        #pdb.set_trace()  # DEBUG
-        #print(f"***DEBUG*** final new filed ({len(copy)}): {copy}")  # debug
+        
         self._array = copy
         
 

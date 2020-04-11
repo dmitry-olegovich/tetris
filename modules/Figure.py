@@ -33,7 +33,8 @@ class Cell():
         """Change position as if the cell is rotated 90 deg 
         counter-clockwise around the 0,0 point.
         """
-        self._pos = Coordinate(self.y, -self.x)
+        #self._pos = Coordinate(self.y, -self.x)
+        self._pos = Coordinate(-self.y, self.x)
 
     def draw(self, screen, palette, width):
         x = self.x * width
