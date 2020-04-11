@@ -246,10 +246,13 @@ class Tetris():
 
         l_num = len(lines)
         self._lines += l_num
-        if self._lines + 1 % 15 == 0:  # debug value
-            self._speed += 1
+        speed_chng =  self._lines // 2 + 1  # debug value
+        if speed_chng > self._speed:
+            self._speed = speed_chng
             cycles = self._timer._max
-            self._timer = Counter(cycles - cycles*0.1)
+            self._timer = Counter(cycles - cycles*0.15)  # debug formula
+            print(f"***DEBUG*** speed = {self._speed}, tick cycles = {self._timer._max}")  # debug
+        
         #print(f"SCORE: {self._score}\nLINES: {self._lines}\nSPEED: {self._speed}")  # debug
 
 class Moveset():

@@ -8,8 +8,10 @@ Features:
 	+ next figure display
 	+ read if it's possible to fix FPS and tie timers to them
 	- refactor constants to be tuned via config or code where needed
-	- refactor unused shit
+	- refactor out unused shitand duplicated shit
+	- squares prettier
 	- high score list
+	
 Bugs:
 	+ figures can be put out of area bounds by rotating
 	+ lines not removed correctly (maybe line needs to be above bottom for this)
