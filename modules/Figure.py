@@ -33,7 +33,9 @@ class Cell():
         """Change position as if the cell is rotated 90 deg 
         counter-clockwise around the 0,0 point.
         """
+        # this makes figures turn counter clockwise
         #self._pos = Coordinate(self.y, -self.x)
+        # this makes figures turn clockwise
         self._pos = Coordinate(-self.y, self.x)
 
     def draw(self, screen, palette, width):
@@ -41,17 +43,16 @@ class Cell():
         y = self.y * width
         pygame.draw.rect(screen, palette[self._color], 
             (x,y, width, width), 0)
+        pygame.draw.rect(screen, palette[0], 
+            (x,y, width, width), 1)
     
-    # Not needed maybe?
     @property
     def x(self):
         return self._pos.x
-    
-    # Not needed maybe?
+
     @property
     def y(self):
         return self._pos.y
-
 
 
 class Figure():
@@ -62,11 +63,14 @@ class Figure():
             it is used to get the items for init process from a 
             '_FIGURES' class atribute.
 
-    Atributes:
+    Attributes:
         _pos (tuple): position of the center cell (that is at 0,0),
         _cells (list): list of 'Cell' objects,
         _color (int): color of the cells,
         _dont_rotate (bool): as square blocks look wierd when rotated.
+    
+    Class attributes:
+        _FIGURES (list of lists of tuples (int, int)): possible figures
     """
     
     _FIGURES = [
@@ -137,6 +141,8 @@ class Figure():
             cell.draw(screen, palette, cell_width)
 
     def copy(self):
+        """Return a figure copy in a 0,0 position."""
+
         return Figure(self._code, 0, 0)
 
     @property

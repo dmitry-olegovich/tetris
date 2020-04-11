@@ -49,10 +49,12 @@ class Tetris():
         _palette (list): list of used colors - (r,g,b) tuples.
 
     """
+
+    _hold_key_speed_lag = 2  # move figure if keyheld every X ticks
+    _held_key_input_lag = 5  # after first move, X ticks lag on key held
+    _lines_num_speed_up = 4  # increase speed every X lines
     
     def __init__(self, config: dict):
-        #_canvas (pygame.Surface): the canvas on which to draw figures
-        self._timer = Counter(config['turn_cycles'])
         self._field = Field(config['width'], config['height'])
         self._figure = Figure(0,0,0)
         self._next = Figure(0,0,0)
@@ -74,6 +76,7 @@ class Tetris():
         self._next = self._generate_new_figure()
         self._next = self._generate_new_figure()
         self._moves_keys = self._moves.keys()
+        self._timer = Counter(self._calc_turn_ticks())
 
     @property
     def width(self):
@@ -126,7 +129,7 @@ class Tetris():
             if pressed_list[key] == 0:
                 self._moves[key] = None
             if pressed_list[key] == 1 and self._moves[key] is None:
-                self._moves[key] = Counter(5) #  debug value
+                self._moves[key] = Counter(self._held_key_input_lag)
     
     def tick(self):
         """Make a game logic tick."""
@@ -137,9 +140,8 @@ class Tetris():
                 continue
             self._moves[key].increment()
             if not self._moves[key].checks_out():
-                #pdb.set_trace()  # DEBUG
                 # drop timer from input lag to move slowdown value
-                self._moves[key] = Counter(2)  # debug value
+                self._moves[key] = Counter(self._hold_key_speed_lag)
                 # now make a move
                 getattr(self, Moveset.moves[key]) ()
         
@@ -153,15 +155,10 @@ class Tetris():
         self._update_info(lines_full)
         self._field.flash_lines(lines_full)
 
-    ####################################################################
-    #                           TODO 
-    # Ticks for graphic tick w/ game logic on pause
-    # 
-    ####################################################################
-    
     def tick_paused(self):
         """Make a time tick without game logic tick."""
-
+        
+        # not implemented yet
         pass
 
     def info_update(self):
@@ -184,6 +181,8 @@ class Tetris():
         """Return a pygame.Surface object with figure and field cell."""
 
         surface = pygame.Surface(self._screen_res)
+        surface.fill(self._config['palette'][0])
+
         self._figure.draw(surface, self._config['palette'],
             self._config['cell_width'])
         self._field.draw(surface, self._config['palette'],
@@ -196,7 +195,6 @@ class Tetris():
 
     def _down_or_stop(self):
         """Drop figure if no field cells in the way."""
-        #print(f"***DEBUG*** {self._down_or_stop.__name__}: params: {self._figure}")  # debug
         if self._field.check_down(self._figure):
             self._figure.drop()
         else:
@@ -250,18 +248,29 @@ class Tetris():
 
         l_num = len(lines)
         self._lines += l_num
-        speed_chng =  self._lines // 2 + 1  # debug value
+        speed_chng =  self._lines // self._lines_num_speed_up + 1
         if speed_chng > self._speed:
             self._speed = speed_chng
-            cycles = self._timer._max
-            self._timer = Counter(cycles - cycles*0.15)  # debug formula
-            print(f"***DEBUG*** speed = {self._speed}, tick cycles = {self._timer._max}")  # debug
-        
-        #print(f"SCORE: {self._score}\nLINES: {self._lines}\nSPEED: {self._speed}")  # debug
+            cycles = self._config['turn_cycles']
+            self._timer = Counter(self._calc_turn_ticks())
 
+    def _calc_turn_ticks(self):
+        return self._config['turn_cycles'] * self._exp(self._speed)
+    
+    @staticmethod
+    def _exp(number):
+        """Return calculation for exponential decresase.
+        
+        At number = 1 roughly = 1, at 10 roughly = 0.18
+        """
+        c = 0.585
+        k = 0.3
+
+        return c * (2.71 ** (1 / (k*(number - 1) + 1)) - 1) 
+
+        
 class Moveset():
-    """This class just defines a number of constants for processing moves
-    """
+    """Defines a number of constants for processing moves."""
     
     moves = {
             K_DOWN: '_down_or_stop',
