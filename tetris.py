@@ -34,8 +34,10 @@ while running:
         game.tick()  # increase timers, drop figure, process inputs,
                      # check full lines, flush full lines, increase Score,
                      # Lines, Speed
+        pygame.display.set_caption('PyTetris')
     else:
         game.tick_paused()  # this is planned to be used to flash full lines while game logic is on pause
+        pygame.display.set_caption('PyTetris (Paused)')
 
     # update info for info pannel
     info.update(game.info_update())

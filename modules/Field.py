@@ -55,7 +55,7 @@ class Field():
 
     def grow(self, figure):
         """Add figure to field of fallen cells."""
-        
+        print(f"***DEBUG*** Grow by: {figure.cells}")  # debug
         for cell in figure.cells:
             if cell.y < 0:    # endgame condition
                 return False

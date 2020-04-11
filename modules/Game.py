@@ -112,7 +112,10 @@ class Tetris():
             self._active = False
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
-                self._active = False
+                if self._pause:
+                    self._pause = False
+                else:
+                    self._pause = True
             if event.key == K_DOWN:
                 self._down_or_stop()
             elif event.key == K_LEFT:
