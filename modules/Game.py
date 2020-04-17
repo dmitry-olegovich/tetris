@@ -72,12 +72,15 @@ class Tetris():
         self._pause = False
         self._active = True
         self._palette = config['palette'][:]
-        # swap random figures instead of default ones
-        self._next = self._generate_new_figure()
-        self._next = self._generate_new_figure()
         self._moves_keys = self._moves.keys()
         self._timer = Counter(self._calc_turn_ticks())
         self._lines_since_lvl_up = 0
+
+        # swap random figures instead of default (0,0,0) ones
+        self._generate_new_figure()
+        self._generate_new_figure()
+        
+        #pdb.set_trace()
 
     @property
     def width(self):
@@ -152,8 +155,7 @@ class Tetris():
         self._timer.increment()
         if not self._timer.checks_out():
             self._timer.reset()
-            self._down_or_stop()
-        
+            self._down_or_stop()        
         
         lines_full = self._field.check_full_lines()
         self._update_info(lines_full)
@@ -229,13 +231,10 @@ class Tetris():
         """
         width = self.width
         code = randrange(0, len(Figure._FIGURES))
-        if self._next:
+        if self._next is not None:
             self._figure = self._next
-        else:
-            code = randrange(0, len(Figure._FIGURES))
-            self._figure = Figure(code, x=int(width/2) - 1, y=0)
-        self._next = Figure(code, x=int(width/2) - 1, y=0)
-
+        
+        self._next = Figure(code, x=int(self.width/2) - 1, y=0)
     
     def _move_figure(self):
         """Move figure based on moves input via held down keys."""
